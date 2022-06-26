@@ -2,6 +2,7 @@
 , stdenv
 , fetchFromGitHub
 , makeWrapper
+, fetchpatch
 , python3
 }:
 
@@ -17,6 +18,14 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = [ makeWrapper ];
+
+  patches = [
+    (fetchpatch {
+      name = "kicad-use-footprint-properties";
+      url = "https://github.com/newAM/InteractiveHtmlBom/commit/93f10709a040ed89b8884106ed58e2f262efb33f.patch";
+      sha256 = "sha256-DCSnErQb7Kx1TA4zl7P5c4zoD2sS+OlagrjNDIFODeI=";
+    })
+  ];
 
   prePatch = ''
     rm InteractiveHtmlBom/__init__.py
