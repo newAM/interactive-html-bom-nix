@@ -18,20 +18,30 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ makeWrapper ];
 
+  prePatch = ''
+    rm InteractiveHtmlBom/__init__.py
+    rm -r InteractiveHtmlBom/dialog
+
+    sed -i '/import wx/d' $(find . -name '*.py')
+    sed -i '/from wx/d' $(find . -name '*.py')
+    sed -i '/from .. import dialog/d' $(find . -name '*.py')
+    sed -i '/from ..dialog/d' $(find . -name '*.py')
+  '';
+
   installPhase =
     let
-      python3WithWx = python3.withPackages (p: with p; [
-        wxPython_4_1
+      python3WithKicad = python3.withPackages (p: with p; [
+        kicad
       ]);
     in
     ''
       mkdir -p $out/opt
       mkdir -p $out/bin
 
-      cp -r $src/InteractiveHtmlBom $out/opt
+      cp -r InteractiveHtmlBom $out/opt
 
       makeWrapper \
-        ${python3WithWx}/bin/python \
+        ${python3WithKicad}/bin/python \
         $out/bin/generate_interactive_bom \
         --set INTERACTIVE_HTML_BOM_NO_DISPLAY 1 \
         --set INTERACTIVE_HTML_BOM_CLI_MODE 1 \
