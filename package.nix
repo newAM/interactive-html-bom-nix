@@ -6,13 +6,13 @@
 }:
 stdenv.mkDerivation rec {
   pname = "interactive-html-bom";
-  version = "2.5.0";
+  version = "2.9.0";
 
   src = fetchFromGitHub {
     owner = "openscopeproject";
     repo = "InteractiveHtmlBom";
     rev = "v${version}";
-    sha256 = "sha256-ZpytvUnQnjJ90mxMe4G3X8T0TUqz7DW9cxOLtJxn55w=";
+    hash = "sha256-jUHEI0dWMFPQlXei3+0m1ruHzpG1hcRnxptNOXzXDqQ=";
   };
 
   nativeBuildInputs = [makeWrapper];
@@ -25,6 +25,7 @@ stdenv.mkDerivation rec {
     sed -i '/from wx/d' $(find . -name '*.py')
     sed -i '/from .. import dialog/d' $(find . -name '*.py')
     sed -i '/from ..dialog/d' $(find . -name '*.py')
+    sed -i 's/elif hasattr(wx, "DisableAsserts")/elif False/g' $(find . -name '*.py')
   '';
 
   installPhase = let
